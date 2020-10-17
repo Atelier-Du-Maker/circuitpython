@@ -1,5 +1,7 @@
 # Contributing
 Please note that this project is released with a
+
+ <https://github.com/adafruit/circuitpython/blob/master/CODE_OF_CONDUCT.md>
 [Contributor Code of Conduct](https://github.com/adafruit/circuitpython/blob/master/CODE_OF_CONDUCT.md).
 By participating in this project you agree to abide by its terms. Participation
 covers any forum used to converse about CircuitPython including unofficial and official spaces. Failure to do
