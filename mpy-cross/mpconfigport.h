@@ -9,13 +9,15 @@
 #define MICROPY_PERSISTENT_CODE_LOAD (0)
 #define MICROPY_PERSISTENT_CODE_SAVE (1)
 
-#define MICROPY_EMIT_X64            (0)
-#define MICROPY_EMIT_X86            (0)
-#define MICROPY_EMIT_THUMB          (0)
-#define MICROPY_EMIT_INLINE_THUMB   (0)
-#define MICROPY_EMIT_INLINE_THUMB_ARMV7M (0)
-#define MICROPY_EMIT_INLINE_THUMB_FLOAT (0)
-#define MICROPY_EMIT_ARM            (0)
+#define MICROPY_EMIT_X64            (1)
+#define MICROPY_EMIT_X86            (1)
+#define MICROPY_EMIT_THUMB          (1)
+#define MICROPY_EMIT_INLINE_THUMB   (1)
+#define MICROPY_EMIT_INLINE_THUMB_ARMV7M (1)
+#define MICROPY_EMIT_INLINE_THUMB_FLOAT (1)
+#define MICROPY_EMIT_ARM            (1)
+#define MICROPY_EMIT_XTENSA         (1)
+#define MICROPY_EMIT_INLINE_XTENSA  (1)
 
 #define MICROPY_DYNAMIC_COMPILER    (1)
 #define MICROPY_COMP_CONST_FOLDING  (1)
@@ -68,45 +70,45 @@
 // MINGW only handles these errno names.
 #ifdef __MINGW32__
 #define MICROPY_PY_UERRNO_LIST \
-  X(EPERM) \
-  X(ENOENT) \
-  X(ESRCH) \
-  X(EINTR) \
-  X(EIO) \
-  X(ENXIO) \
-  X(E2BIG) \
-  X(ENOEXEC) \
-  X(EBADF) \
-  X(ECHILD) \
-  X(EAGAIN) \
-  X(ENOMEM) \
-  X(EACCES) \
-  X(EFAULT) \
-  X(EBUSY) \
-  X(EEXIST) \
-  X(EXDEV) \
-  X(ENODEV) \
-  X(ENOTDIR) \
-  X(EISDIR) \
-  X(EINVAL) \
-  X(ENFILE) \
-  X(EMFILE) \
-  X(ENOTTY) \
-  X(EFBIG) \
-  X(ENOSPC) \
-  X(ESPIPE) \
-  X(EROFS) \
-  X(EMLINK) \
-  X(EPIPE) \
-  X(EDOM) \
-  X(ERANGE) \
-  X(EDEADLOCK) \
-  X(EDEADLK) \
-  X(ENAMETOOLONG) \
-  X(ENOLCK) \
-  X(ENOSYS) \
-  X(ENOTEMPTY) \
-  X(EILSEQ)
+    X(EPERM) \
+    X(ENOENT) \
+    X(ESRCH) \
+    X(EINTR) \
+    X(EIO) \
+    X(ENXIO) \
+    X(E2BIG) \
+    X(ENOEXEC) \
+    X(EBADF) \
+    X(ECHILD) \
+    X(EAGAIN) \
+    X(ENOMEM) \
+    X(EACCES) \
+    X(EFAULT) \
+    X(EBUSY) \
+    X(EEXIST) \
+    X(EXDEV) \
+    X(ENODEV) \
+    X(ENOTDIR) \
+    X(EISDIR) \
+    X(EINVAL) \
+    X(ENFILE) \
+    X(EMFILE) \
+    X(ENOTTY) \
+    X(EFBIG) \
+    X(ENOSPC) \
+    X(ESPIPE) \
+    X(EROFS) \
+    X(EMLINK) \
+    X(EPIPE) \
+    X(EDOM) \
+    X(ERANGE) \
+    X(EDEADLOCK) \
+    X(EDEADLK) \
+    X(ENAMETOOLONG) \
+    X(ENOLCK) \
+    X(ENOSYS) \
+    X(ENOTEMPTY) \
+    X(EILSEQ)
 #endif
 
 // type definitions for the specific machine
@@ -114,7 +116,7 @@
 #ifdef __LP64__
 typedef long mp_int_t; // must be pointer size
 typedef unsigned long mp_uint_t; // must be pointer size
-#elif defined ( __MINGW32__ ) && defined( _WIN64 )
+#elif defined(__MINGW32__) && defined(_WIN64)
 #include <stdint.h>
 typedef __int64 mp_int_t;
 typedef unsigned __int64 mp_uint_t;
@@ -134,14 +136,10 @@ typedef long mp_off_t;
 
 #define MP_PLAT_PRINT_STRN(str, len) (void)0
 
-#ifndef MP_NOINLINE
-#define MP_NOINLINE __attribute__((noinline))
-#endif
-
 // We need to provide a declaration/definition of alloca()
 #ifdef __FreeBSD__
 #include <stdlib.h>
-#elif defined( _WIN32 )
+#elif defined(_WIN32)
 #include <malloc.h>
 #else
 #include <alloca.h>

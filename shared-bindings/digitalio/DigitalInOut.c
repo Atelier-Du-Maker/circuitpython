@@ -59,7 +59,7 @@
 //|         ...
 //|
 STATIC mp_obj_t digitalio_digitalinout_make_new(const mp_obj_type_t *type,
-        mp_uint_t n_args, const mp_obj_t *args, mp_map_t *kw_args) {
+    mp_uint_t n_args, const mp_obj_t *args, mp_map_t *kw_args) {
     mp_arg_check_num(n_args, kw_args, 1, 1, false);
 
     digitalio_digitalinout_obj_t *self = m_new_obj(digitalio_digitalinout_obj_t);
@@ -170,7 +170,7 @@ STATIC mp_obj_t digitalio_digitalinout_switch_to_input(size_t n_args, const mp_o
     digitalio_pull_t pull = PULL_NONE;
     if (args[ARG_pull].u_rom_obj == &digitalio_pull_up_obj) {
         pull = PULL_UP;
-    }else if (args[ARG_pull].u_rom_obj == &digitalio_pull_down_obj) {
+    } else if (args[ARG_pull].u_rom_obj == &digitalio_pull_down_obj) {
         pull = PULL_DOWN;
     }
     // do the transfer
@@ -381,7 +381,7 @@ const mp_obj_type_t digitalio_digitalinout_type = {
 
 // Helper for validating digitalio.DigitalInOut arguments
 digitalio_digitalinout_obj_t *assert_digitalinout(mp_obj_t obj) {
-    if (!MP_OBJ_IS_TYPE(obj, &digitalio_digitalinout_type)) {
+    if (!mp_obj_is_type(obj, &digitalio_digitalinout_type)) {
         mp_raise_TypeError(translate("argument num/types mismatch"));
     }
     digitalio_digitalinout_obj_t *pin = MP_OBJ_TO_PTR(obj);

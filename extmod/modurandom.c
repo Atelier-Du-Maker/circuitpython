@@ -18,15 +18,14 @@
 STATIC uint32_t yasmarang_pad = 0xeda4baba, yasmarang_n = 69, yasmarang_d = 233;
 STATIC uint8_t yasmarang_dat = 0;
 
-STATIC uint32_t yasmarang(void)
-{
-   yasmarang_pad += yasmarang_dat + yasmarang_d * yasmarang_n;
-   yasmarang_pad = (yasmarang_pad<<3) + (yasmarang_pad>>29);
-   yasmarang_n = yasmarang_pad | 2;
-   yasmarang_d ^= (yasmarang_pad<<31) + (yasmarang_pad>>1);
-   yasmarang_dat ^= (char) yasmarang_pad ^ (yasmarang_d>>8) ^ 1;
+STATIC uint32_t yasmarang(void) {
+    yasmarang_pad += yasmarang_dat + yasmarang_d * yasmarang_n;
+    yasmarang_pad = (yasmarang_pad << 3) + (yasmarang_pad >> 29);
+    yasmarang_n = yasmarang_pad | 2;
+    yasmarang_d ^= (yasmarang_pad << 31) + (yasmarang_pad >> 1);
+    yasmarang_dat ^= (char)yasmarang_pad ^ (yasmarang_d >> 8) ^ 1;
 
-   return (yasmarang_pad^(yasmarang_d<<5)^(yasmarang_pad>>18)^(yasmarang_dat<<1));
+    return yasmarang_pad ^ (yasmarang_d << 5) ^ (yasmarang_pad >> 18) ^ (yasmarang_dat << 1);
 }  /* yasmarang */
 
 // End of Yasmarang
@@ -148,9 +147,11 @@ STATIC mp_float_t yasmarang_float(void) {
     union {
         mp_float_t f;
         #if MP_ENDIANNESS_LITTLE
-        struct { mp_float_int_t frc:MP_FLOAT_FRAC_BITS, exp:MP_FLOAT_EXP_BITS, sgn:1; } p;
+        struct { mp_float_int_t frc : MP_FLOAT_FRAC_BITS, exp : MP_FLOAT_EXP_BITS, sgn : 1;
+        } p;
         #else
-        struct { mp_float_int_t sgn:1, exp:MP_FLOAT_EXP_BITS, frc:MP_FLOAT_FRAC_BITS; } p;
+        struct { mp_float_int_t sgn : 1, exp : MP_FLOAT_EXP_BITS, frc : MP_FLOAT_FRAC_BITS;
+        } p;
         #endif
     } u;
     u.p.sgn = 0;
@@ -179,8 +180,19 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_2(mod_urandom_uniform_obj, mod_urandom_uniform);
 
 #endif // MICROPY_PY_URANDOM_EXTRA_FUNCS
 
+#ifdef MICROPY_PY_URANDOM_SEED_INIT_FUNC
+STATIC mp_obj_t mod_urandom___init__() {
+    mod_urandom_seed(MP_OBJ_NEW_SMALL_INT(MICROPY_PY_URANDOM_SEED_INIT_FUNC));
+    return mp_const_none;
+}
+STATIC MP_DEFINE_CONST_FUN_OBJ_0(mod_urandom___init___obj, mod_urandom___init__);
+#endif
+
 STATIC const mp_rom_map_elem_t mp_module_urandom_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_urandom) },
+    #ifdef MICROPY_PY_URANDOM_SEED_INIT_FUNC
+    { MP_ROM_QSTR(MP_QSTR___init__), MP_ROM_PTR(&mod_urandom___init___obj) },
+    #endif
     { MP_ROM_QSTR(MP_QSTR_getrandbits), MP_ROM_PTR(&mod_urandom_getrandbits_obj) },
     { MP_ROM_QSTR(MP_QSTR_seed), MP_ROM_PTR(&mod_urandom_seed_obj) },
     #if MICROPY_PY_URANDOM_EXTRA_FUNCS
@@ -198,7 +210,7 @@ STATIC MP_DEFINE_CONST_DICT(mp_module_urandom_globals, mp_module_urandom_globals
 
 const mp_obj_module_t mp_module_urandom = {
     .base = { &mp_type_module },
-    .globals = (mp_obj_dict_t*)&mp_module_urandom_globals,
+    .globals = (mp_obj_dict_t *)&mp_module_urandom_globals,
 };
 
-#endif //MICROPY_PY_URANDOM
+#endif // MICROPY_PY_URANDOM

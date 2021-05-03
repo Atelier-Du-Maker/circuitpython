@@ -4,6 +4,7 @@
  * The MIT License (MIT)
  *
  * SPDX-FileCopyrightText: Copyright (c) 2013, 2014 Damien P. George
+ * SPDX-FileCopyrightText: Copyright (c) 2014 Paul Sokolovsky
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -86,7 +87,7 @@ typedef struct _mp_code_state_t {
     // Variable-length
     mp_obj_t state[0];
     // Variable-length, never accessed by name, only as (void*)(state + n_state)
-    //mp_exc_stack_t exc_state[0];
+    // mp_exc_stack_t exc_state[0];
 } mp_code_state_t;
 
 mp_uint_t mp_decode_uint(const byte **ptr);
@@ -102,10 +103,10 @@ const byte *mp_bytecode_print_str(const byte *ip);
 #define mp_bytecode_print_inst(code, const_table) mp_bytecode_print2(code, 1, const_table)
 
 // Helper macros to access pointer with least significant bits holding flags
-#define MP_TAGPTR_PTR(x) ((void*)((uintptr_t)(x) & ~((uintptr_t)3)))
+#define MP_TAGPTR_PTR(x) ((void *)((uintptr_t)(x) & ~((uintptr_t)3)))
 #define MP_TAGPTR_TAG0(x) ((uintptr_t)(x) & 1)
 #define MP_TAGPTR_TAG1(x) ((uintptr_t)(x) & 2)
-#define MP_TAGPTR_MAKE(ptr, tag) ((void*)((uintptr_t)(ptr) | (tag)))
+#define MP_TAGPTR_MAKE(ptr, tag) ((void *)((uintptr_t)(ptr) | (tag)))
 
 #if MICROPY_PERSISTENT_CODE_LOAD || MICROPY_PERSISTENT_CODE_SAVE
 
@@ -114,7 +115,7 @@ const byte *mp_bytecode_print_str(const byte *ip);
 #define MP_OPCODE_VAR_UINT (2)
 #define MP_OPCODE_OFFSET (3)
 
-uint mp_opcode_format(const byte *ip, size_t *opcode_size);
+uint mp_opcode_format(const byte *ip, size_t *opcode_size, bool count_var_uint);
 
 #endif
 

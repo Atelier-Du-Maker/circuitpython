@@ -78,7 +78,7 @@
 STATIC mp_obj_t displayio_ondiskbitmap_make_new(const mp_obj_type_t *type, size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
     mp_arg_check_num(n_args, kw_args, 1, 1, false);
 
-    if (!MP_OBJ_IS_TYPE(pos_args[0], &mp_type_fileio)) {
+    if (!mp_obj_is_type(pos_args[0], &mp_type_fileio)) {
         mp_raise_TypeError(translate("file must be a file opened in byte mode"));
     }
 
@@ -137,5 +137,5 @@ const mp_obj_type_t displayio_ondiskbitmap_type = {
     { &mp_type_type },
     .name = MP_QSTR_OnDiskBitmap,
     .make_new = displayio_ondiskbitmap_make_new,
-    .locals_dict = (mp_obj_dict_t*)&displayio_ondiskbitmap_locals_dict,
+    .locals_dict = (mp_obj_dict_t *)&displayio_ondiskbitmap_locals_dict,
 };

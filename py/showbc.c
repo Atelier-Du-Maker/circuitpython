@@ -36,10 +36,10 @@
 #define printf(...) mp_printf(&mp_plat_print, __VA_ARGS__)
 
 #define DECODE_UINT { \
-    unum = 0; \
-    do { \
-        unum = (unum << 7) + (*ip & 0x7f); \
-    } while ((*ip++ & 0x80) != 0); \
+        unum = 0; \
+        do { \
+            unum = (unum << 7) + (*ip & 0x7f); \
+        } while ((*ip++ & 0x80) != 0); \
 }
 #define DECODE_ULABEL do { unum = (ip[0] | (ip[1] << 8)); ip += 2; } while (0)
 #define DECODE_SLABEL do { unum = (ip[0] | (ip[1] << 8)) - 0x8000; ip += 2; } while (0)
@@ -59,20 +59,20 @@
 #else
 
 #define DECODE_QSTR { \
-    qst = 0; \
-    do { \
-        qst = (qst << 7) + (*ip & 0x7f); \
-    } while ((*ip++ & 0x80) != 0); \
+        qst = 0; \
+        do { \
+            qst = (qst << 7) + (*ip & 0x7f); \
+        } while ((*ip++ & 0x80) != 0); \
 }
 #define DECODE_PTR do { \
-    ip = (byte*)MP_ALIGN(ip, sizeof(void*)); \
-    unum = (uintptr_t)*(void**)ip; \
-    ip += sizeof(void*); \
+        ip = (byte *)MP_ALIGN(ip, sizeof(void *)); \
+        unum = (uintptr_t)*(void **)ip; \
+        ip += sizeof(void *); \
 } while (0)
 #define DECODE_OBJ do { \
-    ip = (byte*)MP_ALIGN(ip, sizeof(mp_obj_t)); \
-    unum = (mp_uint_t)*(mp_obj_t*)ip; \
-    ip += sizeof(mp_obj_t); \
+        ip = (byte *)MP_ALIGN(ip, sizeof(mp_obj_t)); \
+        unum = (mp_uint_t)*(mp_obj_t *)ip; \
+        ip += sizeof(mp_obj_t); \
 } while (0)
 
 #endif
@@ -143,7 +143,7 @@ void mp_bytecode_print(const void *descr, const byte *ip, mp_uint_t len, const m
         mp_int_t bc = bytecode_start - ip;
         mp_uint_t source_line = 1;
         printf("  bc=" INT_FMT " line=" UINT_FMT "\n", bc, source_line);
-        for (const byte* ci = code_info; *ci;) {
+        for (const byte *ci = code_info; *ci;) {
             if ((ci[0] & 0x80) == 0) {
                 // 0b0LLBBBBB encoding
                 bc += ci[0] & 0x1f;
@@ -401,14 +401,9 @@ const byte *mp_bytecode_print_str(const byte *ip) {
             printf("FOR_ITER " UINT_FMT, (mp_uint_t)(ip + unum - mp_showbc_code_start));
             break;
 
-        case MP_BC_POP_BLOCK:
-            // pops block and restores the stack
-            printf("POP_BLOCK");
-            break;
-
-        case MP_BC_POP_EXCEPT:
-            // pops block, checks it's an exception block, and restores the stack, saving the 3 exception values to local threadstate
-            printf("POP_EXCEPT");
+        case MP_BC_POP_EXCEPT_JUMP:
+            DECODE_ULABEL; // these labels are always forward
+            printf("POP_EXCEPT_JUMP " UINT_FMT, (mp_uint_t)(ip + unum - mp_showbc_code_start));
             break;
 
         case MP_BC_BUILD_TUPLE:
@@ -435,12 +430,12 @@ const byte *mp_bytecode_print_str(const byte *ip) {
             printf("BUILD_SET " UINT_FMT, unum);
             break;
 
-#if MICROPY_PY_BUILTINS_SLICE
+        #if MICROPY_PY_BUILTINS_SLICE
         case MP_BC_BUILD_SLICE:
             DECODE_UINT;
             printf("BUILD_SLICE " UINT_FMT, unum);
             break;
-#endif
+        #endif
 
         case MP_BC_STORE_COMP:
             DECODE_UINT;
@@ -459,25 +454,25 @@ const byte *mp_bytecode_print_str(const byte *ip) {
 
         case MP_BC_MAKE_FUNCTION:
             DECODE_PTR;
-            printf("MAKE_FUNCTION %p", (void*)(uintptr_t)unum);
+            printf("MAKE_FUNCTION %p", (void *)(uintptr_t)unum);
             break;
 
         case MP_BC_MAKE_FUNCTION_DEFARGS:
             DECODE_PTR;
-            printf("MAKE_FUNCTION_DEFARGS %p", (void*)(uintptr_t)unum);
+            printf("MAKE_FUNCTION_DEFARGS %p", (void *)(uintptr_t)unum);
             break;
 
         case MP_BC_MAKE_CLOSURE: {
             DECODE_PTR;
             mp_uint_t n_closed_over = *ip++;
-            printf("MAKE_CLOSURE %p " UINT_FMT, (void*)(uintptr_t)unum, n_closed_over);
+            printf("MAKE_CLOSURE %p " UINT_FMT, (void *)(uintptr_t)unum, n_closed_over);
             break;
         }
 
         case MP_BC_MAKE_CLOSURE_DEFARGS: {
             DECODE_PTR;
             mp_uint_t n_closed_over = *ip++;
-            printf("MAKE_CLOSURE_DEFARGS %p " UINT_FMT, (void*)(uintptr_t)unum, n_closed_over);
+            printf("MAKE_CLOSURE_DEFARGS %p " UINT_FMT, (void *)(uintptr_t)unum, n_closed_over);
             break;
         }
 

@@ -75,7 +75,7 @@ static void make_sample_code_file(FATFS *fatfs) {
     FIL fs;
     UINT char_written = 0;
     const byte buffer[] = "print(\"Hello World!\")\n";
-    //Create or modify existing code.py file
+    // Create or modify existing code.py file
     f_open(fatfs, &fs, "/code.py", FA_WRITE | FA_CREATE_ALWAYS);
     f_write(&fs, buffer, sizeof(buffer) - 1, &char_written);
     f_close(&fs);
@@ -97,7 +97,7 @@ void filesystem_init(bool create_allowed, bool force_create) {
 
     if ((res == FR_NO_FILESYSTEM && create_allowed) || force_create) {
         // No filesystem so create a fresh one, or reformat has been requested.
-        uint8_t working_buf[_MAX_SS];
+        uint8_t working_buf[FF_MAX_SS];
         res = f_mkfs(&vfs_fat->fatfs, FM_FAT, 0, working_buf, sizeof(working_buf));
         // Flush the new file system to make sure it's repaired immediately.
         supervisor_flash_flush();
@@ -106,11 +106,11 @@ void filesystem_init(bool create_allowed, bool force_create) {
         }
 
         // set label
-#ifdef CIRCUITPY_DRIVE_LABEL
+        #ifdef CIRCUITPY_DRIVE_LABEL
         res = f_setlabel(&vfs_fat->fatfs, CIRCUITPY_DRIVE_LABEL);
-#else
+        #else
         res = f_setlabel(&vfs_fat->fatfs, "CIRCUITPY");
-#endif
+        #endif
         if (res != FR_OK) {
             return;
         }

@@ -13,7 +13,7 @@
 // the algorithm here is modelled on CPython's heapq.py
 
 STATIC mp_obj_list_t *get_heap(mp_obj_t heap_in) {
-    if (!MP_OBJ_IS_TYPE(heap_in, &mp_type_list)) {
+    if (!mp_obj_is_type(heap_in, &mp_type_list)) {
         mp_raise_TypeError(translate("heap must be a list"));
     }
     return MP_OBJ_TO_PTR(heap_in);
@@ -95,7 +95,7 @@ STATIC MP_DEFINE_CONST_DICT(mp_module_uheapq_globals, mp_module_uheapq_globals_t
 
 const mp_obj_module_t mp_module_uheapq = {
     .base = { &mp_type_module },
-    .globals = (mp_obj_dict_t*)&mp_module_uheapq_globals,
+    .globals = (mp_obj_dict_t *)&mp_module_uheapq_globals,
 };
 
-#endif //MICROPY_PY_UHEAPQ
+#endif // MICROPY_PY_UHEAPQ

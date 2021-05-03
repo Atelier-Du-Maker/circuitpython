@@ -80,7 +80,7 @@ STATIC mp_obj_t bleio_characteristic_buffer_make_new(const mp_obj_type_t *type, 
         mp_raise_ValueError_varg(translate("%q must be >= 1"), MP_QSTR_buffer_size);
     }
 
-    if (!MP_OBJ_IS_TYPE(characteristic, &bleio_characteristic_type)) {
+    if (!mp_obj_is_type(characteristic, &bleio_characteristic_type)) {
         mp_raise_TypeError(translate("Expected a Characteristic"));
     }
 
@@ -243,5 +243,5 @@ const mp_obj_type_t bleio_characteristic_buffer_type = {
     .getiter = mp_identity_getiter,
     .iternext = mp_stream_unbuffered_iter,
     .protocol = &characteristic_buffer_stream_p,
-    .locals_dict = (mp_obj_dict_t*)&bleio_characteristic_buffer_locals_dict
+    .locals_dict = (mp_obj_dict_t *)&bleio_characteristic_buffer_locals_dict
 };

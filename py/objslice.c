@@ -38,8 +38,6 @@
 
 #if MICROPY_PY_BUILTINS_SLICE
 
-// TODO: This implements only variant of slice with 2 integer args only.
-// CPython supports 3rd arg (step), plus args can be arbitrary Python objects.
 typedef struct _mp_obj_slice_t {
     mp_obj_base_t base;
     mp_obj_t start;
@@ -62,7 +60,7 @@ STATIC void slice_print(const mp_print_t *print, mp_obj_t o_in, mp_print_kind_t 
 #if MICROPY_PY_BUILTINS_SLICE_ATTRS
 STATIC mp_obj_t slice_indices(mp_obj_t self_in, mp_obj_t length_obj) {
     mp_obj_slice_t *self = MP_OBJ_TO_PTR(self_in);
-    if (!MP_OBJ_IS_SMALL_INT(length_obj)) {
+    if (!mp_obj_is_small_int(length_obj)) {
         mp_raise_TypeError(translate("Length must be an int"));
     }
 
@@ -125,22 +123,22 @@ STATIC void slice_attr(mp_obj_t self_in, qstr attr, mp_obj_t *dest) {
     } else if (attr == MP_QSTR_step) {
         dest[0] = self->step;
     } else if (attr == MP_QSTR_indices) {
-        mp_convert_member_lookup(self_in, self->base.type, (mp_obj_t) &slice_indices_obj, dest);
+        mp_convert_member_lookup(self_in, self->base.type, (mp_obj_t)&slice_indices_obj, dest);
     }
 }
 
 STATIC mp_obj_t slice_make_new(const mp_obj_type_t *type,
-        size_t n_args, const mp_obj_t *args, mp_map_t *kw_args);
+    size_t n_args, const mp_obj_t *args, mp_map_t *kw_args);
 #endif
 
 const mp_obj_type_t mp_type_slice = {
     { &mp_type_type },
     .name = MP_QSTR_slice,
     .print = slice_print,
-#if MICROPY_PY_BUILTINS_SLICE_ATTRS
+    #if MICROPY_PY_BUILTINS_SLICE_ATTRS
     .make_new = slice_make_new,
     .attr = slice_attr,
-#endif
+    #endif
 };
 
 mp_obj_t mp_obj_new_slice(mp_obj_t ostart, mp_obj_t ostop, mp_obj_t ostep) {
@@ -219,7 +217,7 @@ void mp_obj_slice_indices(mp_obj_t self_in, mp_int_t length, mp_bound_slice_t *r
 
 #if MICROPY_PY_BUILTINS_SLICE_ATTRS
 STATIC mp_obj_t slice_make_new(const mp_obj_type_t *type,
-        size_t n_args, const mp_obj_t *args, mp_map_t *kw_args) {
+    size_t n_args, const mp_obj_t *args, mp_map_t *kw_args) {
     if (type != &mp_type_slice) {
         mp_raise_NotImplementedError(translate("Cannot subclass slice"));
     }
@@ -245,7 +243,7 @@ STATIC mp_obj_t slice_make_new(const mp_obj_type_t *type,
 #endif
 
 void mp_obj_slice_get(mp_obj_t self_in, mp_obj_t *start, mp_obj_t *stop, mp_obj_t *step) {
-    assert(MP_OBJ_IS_TYPE(self_in, &mp_type_slice));
+    assert(mp_obj_is_type(self_in, &mp_type_slice));
     mp_obj_slice_t *self = MP_OBJ_TO_PTR(self_in);
     *start = self->start;
     *stop = self->stop;
